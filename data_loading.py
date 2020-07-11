@@ -29,7 +29,7 @@ def prep(x: pd.DataFrame) -> pd.DataFrame:
     return x[['stars', 'text', 'date']]
 
 
-def undersample_data(total_num_samples: int = 400_000, train_ratio: float = 0.75, validation_ratio: float = 0.15,
+def undersample_data(path_to_pickle: str = None, total_num_samples: int = 400_000, train_ratio: float = 0.75, validation_ratio: float = 0.15,
                      test_ratio: float = 0.1) -> Dict[str, Union[pd.DataFrame, pd.Series]]:
     """
     Subsamples dataset. The train set will have balanced classe, class distribution in validation and test set will follow the original distribution.
@@ -42,7 +42,10 @@ def undersample_data(total_num_samples: int = 400_000, train_ratio: float = 0.75
     if train_ratio + validation_ratio + test_ratio != 1:
         raise ValueError("Train-, Validation- and Testratio have to sum to 1!")
 
-    df = pd.read_pickle('drive/My Drive/reviews_optimized.pickle')
+    if path_to_pickle is None:
+        path_to_pickle = 'drive/My Drive/reviews_optimized.pickle'
+
+    df = pd.read_pickle(path_to_pickle)
 
     x_train, x_test, y_train, y_test = train_test_split(
         df.drop('stars', axis=1),
