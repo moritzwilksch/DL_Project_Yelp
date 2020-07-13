@@ -11,7 +11,7 @@ def prepare_raw_data(path_to_json: str = None) -> pd.DataFrame:
     CAUTION: Long running time!
     """
     if path_to_json is None:
-        path_to_json = "~/Downloads/yelp_dataset/yelp_academic_dataset_review.json"
+        path_to_json = "/data/yelp_academic_dataset_review.json"
 
     df: pd.DataFrame = pd.read_json(path_to_json, lines=True, chunksize=8192)
     preped_chunks: List[pd.DataFrame] = []
