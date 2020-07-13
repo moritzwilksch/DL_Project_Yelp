@@ -43,7 +43,7 @@ def undersample_data(path_to_pickle: str = None, total_num_samples: int = 400_00
         raise ValueError("Train-, Validation- and Testratio have to sum to 1!")
 
     if path_to_pickle is None:
-        path_to_pickle = 'drive/My Drive/reviews_optimized.pickle'
+        path_to_pickle = '/data/reviews_optimized.pickle'
 
     df = pd.read_pickle(path_to_pickle)
 
@@ -91,6 +91,6 @@ def undersample_data(path_to_pickle: str = None, total_num_samples: int = 400_00
         'y_test': y_test
     }
 
-    joblib.dump(data, 'drive/My Drive/subsampled_data.pickle')
+    joblib.dump(data, '/data/subsampled_data.pickle')
     print("Sucessfully saved to disk!")
     return data
