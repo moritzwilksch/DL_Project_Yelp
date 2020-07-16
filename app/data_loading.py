@@ -72,7 +72,7 @@ def undersample_data(path_to_pickle: str = None, total_num_samples: int = 400_00
     samples = []
 
     for _, group in groups:
-        samples.append(group.sample(int(total_num_samples * train_ratio // 5)))
+        samples.append(group.sample(int(total_num_samples * train_ratio // 3)))
 
     x_train = pd.concat(samples)
     y_train = y_train[x_train.index]
