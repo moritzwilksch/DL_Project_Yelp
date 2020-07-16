@@ -3,7 +3,7 @@ import numpy as np
 import joblib
 
 # %%
-data = joblib.load('data/subsampled_data.pickle')
+data = joblib.load('data/3c_subsampled_data.pickle')
 x_train = data['x_train']
 # y_train = data['y_train']
 # x_val = data['x_val']

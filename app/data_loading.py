@@ -4,6 +4,9 @@ from typing import List, Dict, Union
 from sklearn.model_selection import train_test_split
 import joblib
 
+def stars_to_category(stars: int) -> int:
+    """Converts stars of 1 to 5 to categories negative (-1), neutral (0), positive (1)"""
+    return -1 if stars <= 2 else 0 if stars == 3 else 1
 
 def prepare_raw_data(path_to_json: str = None) -> pd.DataFrame:
     """
@@ -53,6 +56,10 @@ def undersample_data(path_to_pickle: str = None, total_num_samples: int = 400_00
         test_size=1 - train_ratio
     )
 
+    # Map stars to categories: positive, neutral, negative
+    y_train = y_train.apply(stars_to_category)
+    y_test = y_test.apply(stars_to_category)
+
     # Split the (too) large test set into validation and test
     x_val, x_test, y_val, y_test = train_test_split(
         x_test,
@@ -91,6 +98,6 @@ def undersample_data(path_to_pickle: str = None, total_num_samples: int = 400_00
         'y_test': y_test
     }
 
-    joblib.dump(data, '/data/subsampled_data.pickle')
+    joblib.dump(data, '/data/3c_subsampled_data.pickle')
     print("Sucessfully saved to disk!")
     return data
