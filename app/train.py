@@ -5,18 +5,23 @@ from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import OneHotEncoder
 import joblib
 
+path = "./"  # needs to end with /
+
 # Load data
-data = joblib.load('3c_subsampled_data.pickle')
+print("Loading data...")
+data = joblib.load(path + '3c_subsampled_data.pickle')
 x_train = data['x_train']
 y_train = data['y_train']
 x_val = data['x_val']
 y_val = data['y_val']
 
 # Load objects: tokenizer and embedding matrix
-tok = joblib.load('tokenizer.pickle')
-embedding_matrix = joblib.load('embedding_matrix.pickle')
+print("Loading prepared objects...")
+tok = joblib.load(path + 'tokenizer.pickle')
+embedding_matrix = joblib.load(path + 'embedding_matrix.pickle')
 
 # Tokenize text
+print("Tokenizing text...")
 x_train = tok.texts_to_sequences(x_train['text'])
 x_val = tok.texts_to_sequences(x_val['text'])
 
@@ -26,6 +31,7 @@ MAX_INPUT_LENGTH = int(np.round(np.percentile([len(x) for x in x_train], 90)))  
 N_EPOCHS = 10
 
 # Zero-pad sequences to max input length
+print("Padding sequences...")
 x_train = pad_sequences(x_train, MAX_INPUT_LENGTH)
 x_val = pad_sequences(x_val, MAX_INPUT_LENGTH)
 
@@ -41,5 +47,5 @@ model: keras.Sequential = create_model(tokenizer=tok, embedding_matrix=embedding
 model.fit(x_train, y_train, batch_size=BATCH_SIZE, epochs=N_EPOCHS, validation_data=(x_val, y_val))
 
 # Save model
-model.save('data/model.hdf5')
+model.save(path + 'model.hdf5')
 print("Model saved to disk!")
