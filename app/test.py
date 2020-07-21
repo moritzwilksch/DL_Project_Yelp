@@ -3,8 +3,9 @@ from sklearn.metrics import classification_report
 import joblib
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
+from keras.preprocessing.sequence import pad_sequences
 
-path = "./"
+path = "/Users/moritz/Downloads/yelp_dataset/"
 
 # Load data
 data = joblib.load(path + '3c_subsampled_data.pickle')
@@ -16,6 +17,9 @@ tok = joblib.load(path + 'tokenizer.pickle')
 
 # Tokenize text
 x_test = tok.texts_to_sequences(x_test['text'])
+
+# Pad sequences
+x_test = pad_sequences(x_test, 183)
 
 # One-hot encode labels
 ohe = OneHotEncoder()
