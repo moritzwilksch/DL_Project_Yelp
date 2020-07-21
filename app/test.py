@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.preprocessing import OneHotEncoder
 from keras.preprocessing.sequence import pad_sequences
 
-path = "/Users/moritz/Downloads/yelp_dataset/"
+path = "./"
 
 # Load data
 data = joblib.load(path + '3c_subsampled_data.pickle')
