@@ -26,7 +26,7 @@ def prepare_raw_data(path_to_json: str = None) -> pd.DataFrame:
     
     data = pd.concat(preped_chunks)
 
-    joblib.dump(data, path + 'reviews_optimized.pickle')
+    data.to_pickle(path + 'reviews_optimized.pickle')
     print("Sucessfully saved to disk!")
 
     return data
