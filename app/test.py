@@ -13,7 +13,7 @@ x_test = data['x_test']
 y_test = data['y_test']
 
 # Get input length
-if tok is undefined:
+if tok is None:
   tok = joblib.load(path + 'tokenizer.pickle')
 INPUT_LENGTH = int(np.round(np.percentile([len(x) for x in tok.texts_to_sequences(x_test['text'])], 90)))
 
