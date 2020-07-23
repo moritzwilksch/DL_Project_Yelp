@@ -12,7 +12,10 @@ data = joblib.load(path + '3c_subsampled_data.pickle')
 x_test = data['x_test']
 y_test = data['y_test']
 
-INPUT_LENGTH = int(np.round(np.percentile([len(x) for x in x_test], 90)))
+# Get input length
+if tok is undefined:
+  tok = joblib.load(path + 'tokenizer.pickle')
+INPUT_LENGTH = int(np.round(np.percentile([len(x) for x in tok.texts_to_sequences(x_test['text'])], 90)))
 
 # Load tokenizer for preprocessing
 tok = joblib.load(path + 'tokenizer.pickle')
