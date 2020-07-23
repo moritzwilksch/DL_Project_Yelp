@@ -43,12 +43,6 @@ y_val = ohe.fit_transform(y_val.values.reshape(-1, 1))
 # Instantiate Model
 model: keras.Sequential = create_model(tokenizer=tok, embedding_matrix=embedding_matrix, max_input_length=MAX_INPUT_LENGTH)
 
-print(x_train.shape, y_train.shape)
-print(type(x_train), type(y_train))
-
-print(x_val.shape, y_val.shape)
-print(type(x_val), type(y_val))
-
 # Fit model
 model.fit(x_train, y_train, batch_size=BATCH_SIZE, epochs=N_EPOCHS, validation_data=(x_val, y_val))
 
