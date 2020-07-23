@@ -21,8 +21,13 @@ def prepare_raw_data(path_to_json: str = None) -> pd.DataFrame:
 
     for chunk in df:
         preped_chunks.append(prep(chunk))
+    
+    data = pd.concat(preped_chunks)
 
-    return pd.concat(preped_chunks)
+    joblib.dump(data, '/data/reviews_optimized.pickle')
+    print("Sucessfully saved to disk!")
+
+    return data
 
 
 def prep(x: pd.DataFrame) -> pd.DataFrame:
