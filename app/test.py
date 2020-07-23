@@ -14,7 +14,7 @@ y_test = data['y_test']
 
 # Get input length
 tok = joblib.load(path + 'tokenizer.pickle')
-INPUT_LENGTH = int(np.round(np.percentile([len(x) for x in tok.texts_to_sequences(x_test['text'])], 90)))
+INPUT_LENGTH = int(np.round(np.percentile([len(x) for x in tok.texts_to_sequences(data['x_train']['text'])], 90)))
 
 # Load tokenizer for preprocessing
 tok = joblib.load(path + 'tokenizer.pickle')
