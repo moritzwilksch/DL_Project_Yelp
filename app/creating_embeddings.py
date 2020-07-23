@@ -59,3 +59,4 @@ for word, index in tok.word_index.items():
 # Save matrix and tokenizer object for later use
 joblib.dump(embedding_matrix, path + 'embedding_matrix.pickle')
 joblib.dump(tok, path + 'tokenizer.pickle')
+print('Embeddings and Tokens saved to disk!')

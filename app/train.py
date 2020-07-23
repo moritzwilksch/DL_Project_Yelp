@@ -1,6 +1,6 @@
 import keras
 import numpy as np
-from app.architecture import create_model
+from architecture import create_model
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import OneHotEncoder
 import joblib
