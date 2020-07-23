@@ -3,7 +3,9 @@ import numpy as np
 import joblib
 
 # %%
-data = joblib.load('data/3c_subsampled_data.pickle')
+path = "../data/"
+
+data = joblib.load(path + '3c_subsampled_data.pickle')
 x_train = data['x_train']
 # y_train = data['y_train']
 # x_val = data['x_val']
@@ -17,7 +19,7 @@ import fasttext.util
 
 # For first run: download model (6 GB)
 # fasttext.util.download_model('en', if_exists='ignore')
-ft = fasttext.load_model('data/cc.en.300.bin')
+ft = fasttext.load_model(path + 'cc.en.300.bin')
 
 # %%
 from gensim.utils import simple_preprocess
@@ -55,5 +57,5 @@ for word, index in tok.word_index.items():
 
 # %%
 # Save matrix and tokenizer object for later use
-joblib.dump(embedding_matrix, '/data/embedding_matrix.pickle')
-joblib.dump(tok, '/data/tokenizer.pickle')
+joblib.dump(embedding_matrix, path + 'embedding_matrix.pickle')
+joblib.dump(tok, path + 'tokenizer.pickle')

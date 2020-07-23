@@ -4,6 +4,8 @@ from typing import List, Dict, Union
 from sklearn.model_selection import train_test_split
 import joblib
 
+path = "../data/"
+
 def stars_to_category(stars: int) -> int:
     """Converts stars of 1 to 5 to categories negative (-1), neutral (0), positive (1)"""
     return -1 if stars <= 2 else 0 if stars == 3 else 1
@@ -14,7 +16,7 @@ def prepare_raw_data(path_to_json: str = None) -> pd.DataFrame:
     CAUTION: Long running time!
     """
     if path_to_json is None:
-        path_to_json = "/data/yelp_academic_dataset_review.json"
+        path_to_json = path + "yelp_academic_dataset_review.json"
 
     df: pd.DataFrame = pd.read_json(path_to_json, lines=True, chunksize=8192)
     preped_chunks: List[pd.DataFrame] = []
@@ -24,7 +26,7 @@ def prepare_raw_data(path_to_json: str = None) -> pd.DataFrame:
     
     data = pd.concat(preped_chunks)
 
-    joblib.dump(data, '/data/reviews_optimized.pickle')
+    joblib.dump(data, path + 'reviews_optimized.pickle')
     print("Sucessfully saved to disk!")
 
     return data
@@ -51,7 +53,7 @@ def undersample_data(path_to_pickle: str = None, total_num_samples: int = 400_00
         raise ValueError("Train-, Validation- and Testratio have to sum to 1!")
 
     if path_to_pickle is None:
-        path_to_pickle = '/data/reviews_optimized.pickle'
+        path_to_pickle = path + 'reviews_optimized.pickle'
 
     df = pd.read_pickle(path_to_pickle)
 
@@ -103,6 +105,6 @@ def undersample_data(path_to_pickle: str = None, total_num_samples: int = 400_00
         'y_test': y_test
     }
 
-    joblib.dump(data, '/data/3c_subsampled_data.pickle')
+    joblib.dump(data, path + '3c_subsampled_data.pickle')
     print("Sucessfully saved to disk!")
     return data

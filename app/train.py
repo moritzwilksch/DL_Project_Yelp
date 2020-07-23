@@ -5,7 +5,7 @@ from keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import OneHotEncoder
 import joblib
 
-path = "./"  # needs to end with /
+path = "../data/"  # needs to end with /
 
 # Load data
 print("Loading data...")
