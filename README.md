@@ -9,7 +9,7 @@ A project by Moritz Wilksch, Sofya Marchenko and Ferdinand Hoske for the Deep Le
    - The JSON is only necessary when you want to run Step 4. In case you download the pickle `reviews_optimized.pickle` you can skip this step
 2. Make sure that docker and docker-compose are installed
 3. Start the docker container with `docker-compose run app` which will build the image and bring you into the python shell. Then all files can be run with `exec(open('filename.py').read())`. The folder `/data` is mounted as Volume. You can shut down the container with `exit()`
-   **Recommendation: skip 4 to 8 and proceed right to 9. These steps take ca. 30min running time and 20GB of RAM and another 15GB of disk space**
+   **Recommendation: skip 4 to 8 and proceed right to 9. Then all you have to do is download the model file, link below. These steps take ca. 30min running time and 20GB of RAM and another 15GB of disk space**
 4. Run `prepare_raw_data.py`
    - It returns a dataframe containing only the review, stars and date such that the dataset fits into memory
    - Save this dataframe as a pickle file (`reviews_optimized.pickle`) (to preserve datatypes and make file handling more easy)
