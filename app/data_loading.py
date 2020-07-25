@@ -1,110 +1,87 @@
 # %%
 import pandas as pd
-from typing import List, Dict, Union
 from sklearn.model_selection import train_test_split
 import joblib
 
+# %%
 path = "../data/"
 
 def stars_to_category(stars: int) -> int:
     """Converts stars of 1 to 5 to categories negative (-1), neutral (0), positive (1)"""
     return -1 if stars <= 2 else 0 if stars == 3 else 1
 
-def prepare_raw_data(path_to_json: str = None) -> pd.DataFrame:
-    """
-    Loads raw json file of reviews and preprocesses it using the prep function.
-    CAUTION: Long running time!
-    """
-    if path_to_json is None:
-        path_to_json = path + "yelp_academic_dataset_review.json"
+"""
+Subsamples dataset. The train set will have balanced classe, class distribution in validation and test set will follow the original distribution.
+:param total_num_samples: Total number of samples over all 3 splits
+:param train_ratio: Percent of `total_num_samples` to put in training set
+:param validation_ratio: Percent of `total_num_samples` to put in validation set
+:param test_ratio: Percent of `total_num_samples` to put in test set
+:return: Dictionary with keys x_train, y_train, x_val, y_val, x_test, y_test each containing a dataframe (x_) or Series (y_)
+"""
 
-    df: pd.DataFrame = pd.read_json(path_to_json, lines=True, chunksize=8192)
-    preped_chunks: List[pd.DataFrame] = []
+total_num_samples: int = 400_000
+train_ratio: float = 0.75
+validation_ratio: float = 0.15
+test_ratio: float = 0.1
 
-    for chunk in df:
-        preped_chunks.append(prep(chunk))
-    
-    data = pd.concat(preped_chunks)
+# %%
+if train_ratio + validation_ratio + test_ratio != 1:
+    raise ValueError("Train-, Validation- and Testratio have to sum to 1!")
 
-    data.to_pickle(path + 'reviews_optimized.pickle')
-    print("Sucessfully saved to disk!")
+path_to_pickle = path + 'reviews_optimized.pickle'
 
-    return data
+df = pd.read_pickle(path_to_pickle)
 
+# %%
+x_train, x_test, y_train, y_test = train_test_split(
+    df.drop('stars', axis=1),
+    df['stars'],
+    test_size=1 - train_ratio
+)
 
-def prep(x: pd.DataFrame) -> pd.DataFrame:
-    """Drops all columns except for stars, text and date and optimizes datatypes."""
-    x['text'] = x['text'].astype('string')
-    x['stars'] = x['stars'].astype('category')
-    return x[['stars', 'text', 'date']]
+# Map stars to categories: positive, neutral, negative
+y_train = y_train.apply(stars_to_category)
+y_test = y_test.apply(stars_to_category)
 
+# Split the (too) large test set into validation and test
+x_val, x_test, y_val, y_test = train_test_split(
+    x_test,
+    y_test,
+    test_size=test_ratio / (test_ratio + validation_ratio)
+)
 
-def undersample_data(path_to_pickle: str = None, total_num_samples: int = 400_000, train_ratio: float = 0.75, validation_ratio: float = 0.15,
-                     test_ratio: float = 0.1) -> Dict[str, Union[pd.DataFrame, pd.Series]]:
-    """
-    Subsamples dataset. The train set will have balanced classe, class distribution in validation and test set will follow the original distribution.
-    :param total_num_samples: Total number of samples over all 3 splits
-    :param train_ratio: Percent of `total_num_samples` to put in training set
-    :param validation_ratio: Percent of `total_num_samples` to put in validation set
-    :param test_ratio: Percent of `total_num_samples` to put in test set
-    :return: Dictionary with keys x_train, y_train, x_val, y_val, x_test, y_test each containing a dataframe (x_) or Series (y_)
-    """
-    if train_ratio + validation_ratio + test_ratio != 1:
-        raise ValueError("Train-, Validation- and Testratio have to sum to 1!")
+# %%
+# Group by stars. Subsample an equal number of samples from each group
+groups = x_train.groupby(y_train)
+samples = []
 
-    if path_to_pickle is None:
-        path_to_pickle = path + 'reviews_optimized.pickle'
+for _, group in groups:
+    samples.append(group.sample(int(total_num_samples * train_ratio // 3)))
 
-    df = pd.read_pickle(path_to_pickle)
+x_train = pd.concat(samples)
+y_train = y_train[x_train.index]
 
-    x_train, x_test, y_train, y_test = train_test_split(
-        df.drop('stars', axis=1),
-        df['stars'],
-        test_size=1 - train_ratio
-    )
+# Randomly sumbsample validation data
+x_val = x_val.sample(int(total_num_samples * validation_ratio))
+y_val = y_val[x_val.index]
 
-    # Map stars to categories: positive, neutral, negative
-    y_train = y_train.apply(stars_to_category)
-    y_test = y_test.apply(stars_to_category)
+# Randomly sumbsample test data
+x_test = x_test.sample(int(total_num_samples * test_ratio))
+y_test = y_test[x_test.index]
 
-    # Split the (too) large test set into validation and test
-    x_val, x_test, y_val, y_test = train_test_split(
-        x_test,
-        y_test,
-        test_size=test_ratio / (test_ratio + validation_ratio)
-    )
+print("Successfully split data! Train/Validation/Test-Shapes are:")
+for split in [x_train, x_val, x_test]:
+    print(split.shape)
 
-    # Group by stars. Subsample an equal number of samples from each group
-    groups = x_train.groupby(y_train)
-    samples = []
+# %%
+data = {
+    'x_train': x_train,
+    'y_train': y_train,
+    'x_val': x_val,
+    'y_val': y_val,
+    'x_test': x_test,
+    'y_test': y_test
+}
 
-    for _, group in groups:
-        samples.append(group.sample(int(total_num_samples * train_ratio // 3)))
-
-    x_train = pd.concat(samples)
-    y_train = y_train[x_train.index]
-
-    # Randomly sumbsample validation data
-    x_val = x_val.sample(int(total_num_samples * validation_ratio))
-    y_val = y_val[x_val.index]
-
-    # Randomly sumbsample test data
-    x_test = x_test.sample(int(total_num_samples * test_ratio))
-    y_test = y_test[x_test.index]
-
-    print("Successfully split data! Train/Validation/Test-Shapes are:")
-    for split in [x_train, x_val, x_test]:
-        print(split.shape)
-
-    data = {
-        'x_train': x_train,
-        'y_train': y_train,
-        'x_val': x_val,
-        'y_val': y_val,
-        'x_test': x_test,
-        'y_test': y_test
-    }
-
-    joblib.dump(data, path + '3c_subsampled_data.pickle')
-    print("Sucessfully saved to disk!")
-    return data
+joblib.dump(data, path + '3c_subsampled_data.pickle')
+print("Sucessfully saved to disk!")
