@@ -11,5 +11,5 @@ services:
     ports:
       - "8888:8888"
     volumes:
-        - ./app:/app
-        -./data:/data
+      - ./app:/app
+      - ./data:/data
