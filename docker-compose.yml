@@ -9,4 +9,4 @@ services:
   notebook:
     image: jupyter/datascience-notebook
     ports:
-      - "8888:8888"
+      - "80:8000"
