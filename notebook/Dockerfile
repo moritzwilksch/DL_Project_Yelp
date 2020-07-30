@@ -1,9 +1,5 @@
-FROM jupyter/datascience-notebook
+FROM python:3.7
 WORKDIR /app
 COPY . /app
-
-RUN apt -y install python3.7
-RUN apt -y install python3-pip
-RUN python3.7 -m pip install --upgrade pip
-
 RUN pip install -r requirements.txt
+CMD ["jupyter", "notebook"]
