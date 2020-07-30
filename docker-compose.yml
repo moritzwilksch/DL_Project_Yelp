@@ -7,7 +7,7 @@ services:
     stdin_open: true
     tty: true
   notebook:
-    image: jupyter/datascience-notebook
+    image: jupyter/tensorflow-notebook
     ports:
       - "8888:8888"
     volumes:
