@@ -7,7 +7,7 @@ services:
     stdin_open: true
     tty: true
   notebook:
-    image: jupyter/tensorflow-notebook
+    image: notebook
     ports:
       - "8888:8888"
     volumes:
