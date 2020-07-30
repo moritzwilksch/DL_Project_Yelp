@@ -8,4 +8,5 @@ services:
     tty: true
   notebook:
     image: jupyter/datascience-notebook
-    ports: "8888:8888"
+    ports:
+      - "8888:8888"
